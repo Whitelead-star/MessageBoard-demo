@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>编辑留言</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>✏️ 编辑留言</h1>
+        <form action="/messages/{{ .message.ID }}" method="POST" class="form-box">
+            <input type="text" name="name" value="{{ .message.Name }}" required>
+            <textarea name="content" required>{{ .message.Content }}</textarea>
+            <button type="submit">保存修改</button>
+            <a href="/" class="cancel">取消</a>
+        </form>
+    </div>
+</body>
+
+</html>

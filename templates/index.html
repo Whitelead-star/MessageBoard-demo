@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>留言板</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>📝 留言板</h1>
+
+        <form action="/messages" method="POST" class="form-box">
+            <input type="text" name="name" placeholder="你的名字" required>
+            <textarea name="content" placeholder="说点什么..." required></textarea>
+            <button type="submit">发布留言</button>
+        </form>
+
+        <div class="messages">
+            {{ range .messages }}
+            <div class="message">
+                <div class="header">
+                    <strong>{{ .Name }}</strong>
+                    <span class="time">{{ .CreatedAt.Format "2006-01-02 15:04" }}</span>
+                </div>
+                <p>{{ .Content }}</p>
+                <div class="actions">
+                    <a href="/messages/{{ .ID }}/edit">编辑</a>
+                    <form action="/messages/{{ .ID }}/delete" method="POST" style="display:inline;">
+                        <button type="submit" onclick="return confirm('确定删除吗？')">删除</button>
+                    </form>
+                </div>
+            </div>
+            {{ else }}
+            <p>还没有留言，快来抢沙发！</p>
+            {{ end }}
+        </div>
+    </div>
+</body>
+
+</html>

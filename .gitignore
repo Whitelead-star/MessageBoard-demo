@@ -1,0 +1,16 @@
+# 编译产物
+*.exe
+
+# 数据库文件（本地数据不要传）
+*.db
+
+# 依赖缓存
+/vendor/
+
+# IDE 配置
+.idea/
+.vscode/
+
+# 系统文件
+.DS_Store
+Thumbs.db
