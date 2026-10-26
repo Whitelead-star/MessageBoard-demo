@@ -3,20 +3,67 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>编辑留言</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f3ec" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#17140f" media="(prefers-color-scheme: dark)">
+    <link rel="icon"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23a8321f'/%3E%3Crect x='4.5' y='4.5' width='23' height='23' fill='none' stroke='%23fdfaf2' stroke-width='2'/%3E%3C/svg%3E">
+    <title>编辑留言 · 留言板</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 
 <body>
-    <div class="container">
-        <h1>✏️ 编辑留言</h1>
-        <form action="/messages/{{ .message.ID }}" method="POST" class="form-box">
-            <input type="text" name="name" value="{{ .message.Name }}" required>
-            <textarea name="content" required>{{ .message.Content }}</textarea>
-            <button type="submit">保存修改</button>
-            <a href="/" class="cancel">取消</a>
-        </form>
+    <div class="page">
+        <aside class="rail">
+            <a class="back" href="/">← 返回留言板</a>
+
+            <header class="masthead">
+                <h1>编辑<span class="seal" aria-hidden="true">批注</span></h1>
+                <p class="standfirst">改完按保存，这条留言当即更新，其余留言不受影响。</p>
+            </header>
+
+            <p class="rail-foot">发布时间不会因为编辑而改变，它仍显示这条留言最初贴出的时刻。</p>
+        </aside>
+
+        <main>
+            <section class="edit-panel" aria-labelledby="edit-title">
+                <div class="feed-head">
+                    <h2 id="edit-title">修改内容</h2>
+                    <time class="stamp" datetime="{{ .message.CreatedAt.Format "2006-01-02T15:04:05Z07:00" }}"
+                        title="{{ .message.CreatedAt.Format "2006-01-02 15:04:05" }}">{{ .message.CreatedAt.Format "2006-01-02 15:04" }}</time>
+                </div>
+
+                <form action="/messages/{{ .message.ID }}" method="POST" class="form-box">
+                    <div class="field">
+                        <label for="name">昵称</label>
+                        <input id="name" name="name" type="text" value="{{ .message.Name }}" maxlength="24"
+                            autocomplete="nickname" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="content">内容</label>
+                        <textarea id="content" name="content" rows="5" maxlength="255"
+                            required>{{ .message.Content }}</textarea>
+                        <p class="meter" aria-live="polite"><span data-counter-for="content">0</span> / 255</p>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" data-submit-label="正在保存…">保存修改</button>
+                        <a href="/" class="btn btn-quiet">取消</a>
+                    </div>
+                </form>
+
+                <p class="note">昵称与内容都会显示在留言上。</p>
+            </section>
+        </main>
+
+        <footer class="site-foot">
+            <span>留言板 · Go + Gin</span>
+            <span>做给每一个想说点什么的人</span>
+        </footer>
     </div>
+
+    <script src="/static/app.js"></script>
 </body>
 
 </html>

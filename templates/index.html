@@ -3,40 +3,95 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>留言板</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f3ec" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#17140f" media="(prefers-color-scheme: dark)">
+    <link rel="icon"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23a8321f'/%3E%3Crect x='4.5' y='4.5' width='23' height='23' fill='none' stroke='%23fdfaf2' stroke-width='2'/%3E%3C/svg%3E">
+    <title>留言板 · 说说你的想法</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 
 <body>
-    <div class="container">
-        <h1>📝 留言板</h1>
+    <a class="skip" href="#feed">跳到留言</a>
 
-        <form action="/messages" method="POST" class="form-box">
-            <input type="text" name="name" placeholder="你的名字" required>
-            <textarea name="content" placeholder="说点什么..." required></textarea>
-            <button type="submit">发布留言</button>
-        </form>
+    <div class="page">
+        <aside class="rail">
+            <header class="masthead">
+                <h1>留言板<span class="seal" aria-hidden="true">留言</span></h1>
+                <p class="standfirst">留下你的想法，让每一种声音都被看见。这里只收短句，长话慢慢说。</p>
+            </header>
 
-        <div class="messages">
-            {{ range .messages }}
-            <div class="message">
-                <div class="header">
-                    <strong>{{ .Name }}</strong>
-                    <span class="time">{{ .CreatedAt.Format "2006-01-02 15:04" }}</span>
-                </div>
-                <p>{{ .Content }}</p>
-                <div class="actions">
-                    <a href="/messages/{{ .ID }}/edit">编辑</a>
-                    <form action="/messages/{{ .ID }}/delete" method="POST" style="display:inline;">
-                        <button type="submit" onclick="return confirm('确定删除吗？')">删除</button>
-                    </form>
-                </div>
-            </div>
-            {{ else }}
-            <p>还没有留言，快来抢沙发！</p>
+            <section class="compose" aria-labelledby="compose-title">
+                <h2 id="compose-title">写一条</h2>
+                <form action="/messages" method="POST" class="form-box">
+                    <div class="field">
+                        <label for="name">昵称</label>
+                        <input id="name" name="name" type="text" placeholder="怎么称呼你？" maxlength="24"
+                            autocomplete="nickname" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="content">内容</label>
+                        <textarea id="content" name="content" rows="4" placeholder="说点什么吧…" maxlength="255"
+                            required></textarea>
+                        <p class="meter" aria-live="polite"><span data-counter-for="content">0</span> / 255</p>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" data-submit-label="正在发布…">发布留言</button>
+                </form>
+            </section>
+
+            {{ if .posted }}
+            <p class="status" role="status" data-status>已发布，就在最前面。</p>
             {{ end }}
-        </div>
+
+            <p class="rail-foot">留言按发布时间从新到旧排列，刚发布的排在最前面。</p>
+        </aside>
+
+        <main class="feed" id="feed">
+            <div class="feed-head">
+                <h2>全部留言</h2>
+                <p class="tally">{{ len .messages }} 条</p>
+            </div>
+
+            {{ range .messages }}
+            <article class="entry">
+                <div class="no" aria-hidden="true"></div>
+                <div>
+                    <div class="entry-head">
+                        <h3 class="name">{{ .Name }}</h3>
+                        <time class="stamp" datetime="{{ .CreatedAt.Format "2006-01-02T15:04:05Z07:00" }}"
+                            title="{{ .CreatedAt.Format "2006-01-02 15:04:05" }}">{{ .CreatedAt.Format "2006-01-02 15:04" }}</time>
+                    </div>
+
+                    <p class="body">{{ .Content }}</p>
+
+                    <div class="tools">
+                        <a href="/messages/{{ .ID }}/edit">编辑</a>
+                        <form action="/messages/{{ .ID }}/delete" method="POST"
+                            data-confirm="删除后无法恢复，确定删除这条留言吗？">
+                            <button type="submit" class="danger">删除</button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+            {{ else }}
+            <div class="empty">
+                <p class="mark">空白页</p>
+                <strong>还没有留言</strong>
+                <p>写完按发布，第一句话就出现在这里。</p>
+            </div>
+            {{ end }}
+        </main>
+
+        <footer class="site-foot">
+            <span>留言板 · Go + Gin</span>
+            <span>做给每一个想说点什么的人</span>
+        </footer>
     </div>
+
+    <script src="/static/app.js"></script>
 </body>
 
 </html>

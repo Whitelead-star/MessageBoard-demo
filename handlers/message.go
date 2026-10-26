@@ -22,6 +22,7 @@ func Index(c *gin.Context) {
 	fmt.Println("查到留言数：", len(messages))
 	c.HTML(http.StatusOK, "index.html", gin.H{
 		"messages": messages,
+		"posted":   c.Query("posted") == "1",
 	})
 }
 
@@ -32,7 +33,7 @@ func Create(c *gin.Context) {
 		return
 	}
 	DB.Create(&msg)
-	c.Redirect(http.StatusFound, "/")
+	c.Redirect(http.StatusFound, "/?posted=1")
 }
 
 func EditPage(c *gin.Context) {
